@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renison Cafeteria Daily Menu</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        renison: {
+                            navy: '#2E6F40',       /* Forest Green (Footer match) */
+                            gold: '#D4AF37',
+                            lightGold: '#F4E8C1',
+                            darkNavy: '#1E4A29',   /* Darker Forest Green for hovers */
+                            bgGray: '#F8FAFC'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif;
+            background-image: url('renison-moose.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        /* Fallback background overlay to ensure contrast */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.45);
+            z-index: -1;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between relative overflow-x-hidden">
+
+    <!-- Header Section -->
+    <header class="bg-[#2E6F40]/95 backdrop-blur-md text-white shadow-lg border-b-4 border-renison-gold sticky top-0 z-30">
+        <div class="max-w-4xl mx-auto px-4 py-4 sm:px-6 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="renison-crest.png" alt="Renison Crest" class="w-10 h-10 object-contain rounded-xl shadow bg-white p-1">
+                <div>
+                    <h1 class="text-lg sm:text-xl font-bold tracking-tight leading-tight">Renison Cafeteria</h1>
+                    <p class="text-xs text-renison-lightGold font-medium">University of Waterloo</p>
+                </div>
+            </div>
+            
+            <button onclick="toggleStaffModal()" class="bg-white/10 hover:bg-renison-darkNavy text-white text-xs font-semibold py-2 px-3 rounded-lg border border-white/20 transition flex items-center gap-2 shadow-sm">
+                <i class="fa-solid fa-user-gear text-renison-gold"></i>
+                <span class="hidden sm:inline">Staff Access</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-4xl mx-auto px-4 py-6 sm:px-6 flex-1 w-full relative z-10 space-y-6">
+        
+        <!-- Cycle Schedule & Week Selector Card -->
+        <div class="bg-white/95 backdrop-blur-md rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <span class="bg-amber-100 text-amber-800 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">Cycle Schedule</span>
+                <h2 class="text-xl sm:text-2xl font-bold text-renison-navy mt-2" id="current-week-label">This Week</h2>
+            </div>
+            
+            <div class="flex items-center bg-slate-100 p-1.5 rounded-xl gap-1 overflow-x-auto no-scrollbar max-w-full">
+                <button id="week-btn-0" onclick="switchWeek(0)" class="px-3 py-1.5 text-xs font-bold rounded-lg transition whitespace-nowrap bg-renison-navy text-white shadow-sm">This Week</button>
+                <button id="week-btn-1" onclick="switchWeek(1)" class="px-3 py-1.5 text-xs font-bold rounded-lg transition whitespace-nowrap text-slate-600 hover:text-slate-900">Week 2</button>
+                <button id="week-btn-2" onclick="switchWeek(2)" class="px-3 py-1.5 text-xs font-bold rounded-lg transition whitespace-nowrap text-slate-600 hover:text-slate-900">Week 3</button>
+                <button id="week-btn-3" onclick="switchWeek(3)" class="px-3 py-1.5 text-xs font-bold rounded-lg transition whitespace-nowrap text-slate-600 hover:text-slate-900">Week 4</button>
+            </div>
+        </div>
+
+        <!-- Days Navigation Bar -->
+        <div class="bg-white/95 backdrop-blur-md rounded-2xl p-2 shadow-sm border border-slate-200">
+            <div id="day-tabs-container" class="grid grid-cols-7 gap-1 text-center">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        <!-- Meal Display Grid -->
+        <div id="menu-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Dynamically populated -->
+        </div>
+
+        <!-- Feedback & Recipe Sharing Section -->
+        <section id="feedback" class="bg-white/95 backdrop-blur-md rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-5">
+            <div class="border-b border-slate-100 pb-4">
+                <h3 class="text-lg font-bold text-renison-navy flex items-center gap-2">
+                    <i class="fa-solid fa-comment-dots text-renison-gold"></i> Share your feedback with Renison Food Services!
+                </h3>
+                <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                    We welcome your constructive feedback and ideas for how we can continue to enhance the services and menu we provide in the Renison Cafeteria.
+                </p>
+                
+                <!-- Jira Support / Late Food Request Quick-Link Box -->
+                <div class="mt-4 bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5 text-xs text-emerald-900 font-medium">
+                        <i class="fa-solid fa-utensils text-emerald-700 text-sm"></i>
+                        <span>Need to submit a <strong>Late Food Request</strong> or official service ticket?</span>
+                    </div>
+                    <a href="https://uwaterloo.atlassian.net/servicedesk/customer/portal/46" target="_blank" class="bg-renison-navy hover:bg-renison-darkNavy text-white font-bold py-2 px-3.5 rounded-lg text-xs transition shadow-sm whitespace-nowrap flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Jira Request Portal
+                    </a>
+                </div>
+
+                <p class="text-[11px] text-slate-400 mt-3">
+                    Official Reference: <a href="https://uwaterloo.ca/renison-student-experience/menu" target="_blank" class="text-renison-navy underline hover:text-emerald-700">uwaterloo.ca/renison-student-experience/menu</a>
+                </p>
+            </div>
+
+            <form onsubmit="handleFeedbackSubmit(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Name <span class="font-normal normal-case text-slate-400">(Not Required)</span></label>
+                        <input type="text" id="feedback-name" placeholder="Your name" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-renison-navy bg-slate-50/50">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Email Address <span class="font-normal normal-case text-slate-400">(Not Required)</span></label>
+                        <input type="email" id="feedback-email" placeholder="Your email address" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-renison-navy bg-slate-50/50">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Your Feedback</label>
+                    <textarea id="feedback-text" rows="3" required placeholder="Tell us your thoughts, menu suggestions, or comments..." class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-renison-navy bg-slate-50/50"></textarea>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/80 space-y-2">
+                    <label class="block text-xs font-bold text-slate-700">Do you have a recipe you would like to share with us?</label>
+                    <div class="flex items-center gap-6 text-xs font-medium text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="has-recipe" value="yes" onclick="toggleRecipeInput(true)" class="text-renison-navy focus:ring-renison-navy"> Yes
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="has-recipe" value="no" checked onclick="toggleRecipeInput(false)" class="text-renison-navy focus:ring-renison-navy"> No
+                        </label>
+                    </div>
+                    <div id="recipe-details-container" class="hidden pt-2">
+                        <textarea id="recipe-text" rows="2" placeholder="Share your recipe details, ingredients, or instructions..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white focus:outline-none focus:ring-2 focus:ring-renison-navy"></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-renison-navy hover:bg-renison-darkNavy text-white font-bold py-3 px-4 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Submit Feedback
+                </button>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#2E6F40]/95 backdrop-blur-md text-renison-lightGold text-xs py-6 mt-12 border-t-2 border-renison-gold relative z-10">
+        <div class="max-w-4xl mx-auto px-4 text-center space-y-2">
+            <p class="font-semibold">© Renison University College Food Services</p>
+            <p class="text-white/80">Menu items are subject to availability. Please notify staff of severe dietary allergies.</p>
+        </div>
+    </footer>
+
+    <!-- Staff Portal Modal -->
+    <div id="staff-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-100 max-w-lg w-full overflow-hidden transform transition-all">
+            
+            <!-- Modal Header -->
+            <div class="bg-renison-navy text-white px-6 py-4 flex items-center justify-between border-b-2 border-renison-gold">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-renison-gold text-lg"></i>
+                    <h3 class="font-bold text-base">Cafeteria Staff Portal</h3>
+                </div>
+                <button onclick="toggleStaffModal()" class="text-slate-300 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 space-y-6">
+                
+                <!-- PIN Login State -->
+                <div id="staff-auth-section" class="space-y-4">
+                    <p class="text-xs text-slate-600 font-medium">Enter your staff authorization PIN to manage cafeteria menus and week schedules.</p>
+                    <div>
+                        <input type="password" id="staff-pin-input" placeholder="Enter Staff PIN (Default: 2026)" class="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-renison-navy">
+                        <p id="pin-error-msg" class="text-rose-600 text-xs mt-1 font-semibold hidden">Incorrect PIN. Try again.</p>
+                    </div>
+                    <button onclick="verifyPin()" class="w-full bg-renison-navy hover:bg-renison-darkNavy text-white font-bold py-3 rounded-xl text-sm transition shadow-md">
+                        Authenticate
+                    </button>
+                </div>
+
+                <!-- Staff Dashboard State -->
+                <div id="staff-dashboard" class="hidden space-y-5">
+                    
+                    <!-- Tabs Header -->
+                    <div class="flex border-b border-slate-200 text-xs font-bold overflow-x-auto no-scrollbar gap-2">
+                        <button id="tab-btn-add" onclick="switchStaffTab('add')" class="pb-2 px-2 text-renison-navy border-b-2 border-renison-navy whitespace-nowrap">Add Item</button>
+                        <button id="tab-btn-clear" onclick="switchStaffTab('clear')" class="pb-2 px-2 text-slate-400 hover:text-slate-700 whitespace-nowrap">Drop / Clear</button>
+                        <button id="tab-btn-reset" onclick="switchStaffTab('reset')" class="pb-2 px-2 text-slate-400 hover:text-slate-700 whitespace-nowrap">Cycle & Timer</button>
+                        <button id="tab-btn-support" onclick="switchStaffTab('support')" class="pb-2 px-2 text-slate-400 hover:text-slate-700 whitespace-nowrap">Jira Support</button>
+                    </div>
+
+                    <!-- Tab 1: Add Custom Meal -->
+                    <div id="staff-tab-add-content" class="space-y-3">
+                        <div class="grid grid-cols-3 gap-2">
+                            <div>
+                                <label class="text-[10px] font-bold uppercase text-slate-500">Week</label>
+                                <select id="input-week" class="w-full p-2 border rounded-lg text-xs bg-slate-50">
+                                    <option value="0">This Week</option>
+                                    <option value="1">Week 2</option>
+                                    <option value="2">Week 3</option>
+                                    <option value="3">Week 4</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold uppercase text-slate-500">Day</label>
+                                <select id="input-day" class="w-full p-2 border rounded-lg text-xs bg-slate-50">
+                                    <option value="Mon">Monday</option>
+                                    <option value="Tue">Tuesday</option>
+                                    <option value="Wed">Wednesday</option>
+                                    <option value="Thu">Thursday</option>
+                                    <option value="Fri">Friday</option>
+                                    <option value="Sat">Saturday</option>
+                                    <option value="Sun">Sunday</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold uppercase text-slate-500">Meal</label>
+                                <select id="input-meal" class="w-full p-2 border rounded-lg text-xs bg-slate-50">
+                                    <option value="lunch">Lunch</option>
+                                    <option value="dinner">Dinner</option>
+                                    <option value="soup">Soup</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] font-bold uppercase text-slate-500">Item Title</label>
+                            <input type="text" id="input-title" placeholder="e.g. Butter Chicken & Rice" class="w-full p-2.5 border rounded-lg text-xs">
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] font-bold uppercase text-slate-500">Dietary Badges</label>
+                            <div class="flex flex-wrap gap-2 text-xs mt-1">
+                                <label class="flex items-center gap-1 bg-slate-100 px-2 py-1 rounded cursor-pointer"><input type="checkbox" value="Halal" class="diet-check"> Halal</label>
+                                <label class="flex items-center gap-1 bg-slate-100 px-2 py-1 rounded cursor-pointer"><input type="checkbox" value="Vegetarian" class="diet-check"> Veg</label>
+                                <label class="flex items-center gap-1 bg-slate-100 px-2 py-1 rounded cursor-pointer"><input type="checkbox" value="Vegan" class="diet-check"> Vegan</label>
+                                <label class="flex items-center gap-1 bg-slate-100 px-2 py-1 rounded cursor-pointer"><input type="checkbox" value="Gluten-Free" class="diet-check"> GF</label>
+                            </div>
+                        </div>
+
+                        <button onclick="addCustomItem()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow">
+                            Save Item to Menu
+                        </button>
+                    </div>
+
+                    <!-- Tab 2: Drop Item & Clear Category -->
+                    <div id="staff-tab-clear-content" class="hidden space-y-4">
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-3">
+                            <p class="text-xs font-bold text-slate-700">Drop Specific Item</p>
+                            <div class="grid grid-cols-3 gap-2">
+                                <select id="clear-week" onchange="populateDropItemList()" class="p-2 border rounded-lg text-xs bg-white">
+                                    <option value="0">This Week</option>
+                                    <option value="1">Week 2</option>
+                                    <option value="2">Week 3</option>
+                                    <option value="3">Week 4</option>
+                                </select>
+                                <select id="clear-day" onchange="populateDropItemList()" class="p-2 border rounded-lg text-xs bg-white">
+                                    <option value="Mon">Monday</option>
+                                    <option value="Tue">Tuesday</option>
+                                    <option value="Wed">Wednesday</option>
+                                    <option value="Thu">Thursday</option>
+                                    <option value="Fri">Friday</option>
+                                    <option value="Sat">Saturday</option>
+                                    <option value="Sun">Sunday</option>
+                                </select>
+                                <select id="clear-meal" onchange="populateDropItemList()" class="p-2 border rounded-lg text-xs bg-white">
+                                    <option value="lunch">Lunch</option>
+                                    <option value="dinner">Dinner</option>
+                                    <option value="soup">Soup</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="text-[10px] font-bold uppercase text-slate-500">Select Item to Drop</label>
+                                <select id="drop-item-select" class="w-full p-2.5 border rounded-lg text-xs bg-white mt-1">
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
+
+                            <button onclick="dropSingleItem()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-trash-can"></i> Drop Selected Item
+                            </button>
+                        </div>
+
+                        <hr class="border-slate-200">
+
+                        <div class="space-y-2">
+                            <p class="text-xs font-bold text-slate-700">Clear Entire Category Slot</p>
+                            <button onclick="clearSelectedMeal()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-xl text-xs transition shadow">
+                                Clear All Items in Selected Slot
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Cycle Timer & Reset Controls -->
+                    <div id="staff-tab-reset-content" class="hidden space-y-5">
+                        <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4 text-blue-900 text-sm space-y-2">
+                            <p class="font-bold flex items-center gap-2">
+                                <i class="fa-solid fa-calendar-days text-blue-600"></i> Cycle Schedule Control
+                            </p>
+                            <p class="text-xs text-blue-700">
+                                Cycle Start Date: <strong id="display-cycle-start-date" class="underline">Loading...</strong>
+                            </p>
+                            <p class="text-xs text-blue-800 leading-relaxed">
+                                Advance "This Week" forward as dates elapse without editing application source code.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <button onclick="advanceWeekCycle(7)" class="bg-renison-navy hover:bg-renison-darkNavy text-white font-bold py-3 px-3 rounded-xl text-xs transition shadow flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-forward"></i> Advance Cycle (+1 Wk)
+                            </button>
+                            <button onclick="setCurrentWeekToToday()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-3 rounded-xl text-xs transition shadow flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-rotate"></i> Sync Start to Today
+                            </button>
+                        </div>
+
+                        <hr class="border-slate-200">
+
+                        <div class="bg-rose-50 border border-rose-200 rounded-2xl p-4 text-rose-800 text-sm">
+                            <p class="font-bold flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i> Reset Custom Data</p>
+                            <p class="text-xs mt-1 text-rose-700">Restores all meal categories back to default Renison menu items.</p>
+                        </div>
+                        <button onclick="resetToDefaultMenus()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl text-xs transition shadow">
+                            Restore Default Menus
+                        </button>
+                    </div>
+
+                    <!-- Tab 4: Jira Support Request -->
+                    <div id="staff-tab-support-content" class="hidden space-y-4">
+                        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-slate-800 space-y-3">
+                            <div class="flex items-center gap-2 text-amber-800 font-bold text-xs uppercase tracking-wider">
+                                <i class="fa-solid fa-life-ring"></i> Food Services Assistance & Late Food
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Need technical support, maintenance, or late food requests regarding food operations? Submit an official request through Jira.
+                            </p>
+                            <a href="https://uwaterloo.atlassian.net/servicedesk/customer/portal/46" target="_blank" class="block w-full text-center bg-renison-navy hover:bg-renison-darkNavy text-white font-bold py-3 px-4 rounded-xl text-xs transition shadow">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> Submit a request on Jira Service Desk
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script>
+        const defaultMenuData = {
+    0: { // Week 1: September 21 – 27
+        Mon: {
+            lunch: [
+                { name: "Buttered Chicken", tags: ["Halal"] },
+                { name: "Butter Paneer with Naan Bread", tags: ["Vegetarian"] },
+                { name: "Fried Fish Interactive Station", tags: [] }
+            ],
+            dinner: [
+                { name: "Pork Charsiu", tags: [] },
+                { name: "Roasted Garlic and Spinach Rotini", tags: ["Vegetarian"] }
+            ],
+            soup: [
+                { name: "Make Your Own Sandwich Station", tags: [] },
+                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        },
+        Tue: {
+            lunch: [
+                { name: "Ground Beef Ragu and Gnocchi", tags: ["Halal"] },
+                { name: "Vegetarian Samosa", tags: ["Vegetarian"] },
+                { name: "Korean Rice Cake Interactive Station", tags: [] }
+            ],
+            dinner: [
+                { name: "Chicken Shawarma and Vegetarian Shawarma with Turmeric Rice", tags: ["Halal", "Vegetarian"] }
+            ],
+            soup: [
+                { name: "Make Your Own Sandwich Station", tags: [] },
+                { name: "Grill: Honey Garlic Sausage or All Beef Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        },
+        Wed: {
+            lunch: [
+                { name: "Pepper Steak Stirfry", tags: ["Halal"] },
+                { name: "Vegetarian Fish Sticks with Fries and Coleslaw", tags: ["Vegetarian"] },
+                { name: "Make-your-own Pizza Day Interactive Station", tags: [] }
+            ],
+            dinner: [
+                { name: "Swedish Meatballs with Mashed Potatoes", tags: [] },
+                { name: "Breaded Eggplant with Marinara Sauce and Parmesan Cheese on the Bun", tags: ["Vegetarian"] }
+            ],
+            soup: [
+                { name: "Make Your Own Sandwich Station", tags: [] },
+                { name: "Grill: Chicken Burger or All Beef Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        },
+        Thu: {
+            lunch: [
+                { name: "Shaved Pork with Roasted Peppers and Sauteed Spinach on the Bun", tags: [] },
+                { name: "Vegetarian Cottage Pie", tags: ["Vegetarian"] }
+            ],
+            dinner: [
+                { name: "Gochujang Chicken Bites", tags: ["Halal"] },
+                { name: "Vegetarian Japchae", tags: ["Vegetarian"] },
+                { name: "Kimbap or Bibimbap Interaction Station", tags: [] }
+            ],
+            soup: [
+                { name: "Make Your Own Sandwich Station", tags: [] },
+                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        },
+        Fri: {
+            lunch: [
+                { name: "Beef Taco with Assorted Toppings and Mexican Rice", tags: ["Halal"] },
+                { name: "Vegetarian Burrito", tags: ["Vegetarian"] }
+            ],
+            dinner: [
+                { name: "Miso Glazed Fish Fillet", tags: [] },
+                { name: "Cheese Tortellini with Blush Sauce", tags: ["Vegetarian"] },
+                { name: "Thai Coconut Noodle Soup Interactive Station", tags: [] }
+            ],
+            soup: [
+                { name: "Make Your Own Sandwich Station", tags: [] },
+                { name: "Grill: Grilled Chicken or All Beef Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        },
+        Sat: {
+            lunch: [
+                { name: "Brunch (10:30am - 1:30pm)", tags: [] },
+                { name: "Saturday: Waffle Station", tags: ["Vegetarian"] }
+            ],
+            dinner: [
+                { name: "Dinner (4:45pm - 7:00pm)", tags: [] }
+            ],
+            soup: [
+                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        },
+        Sun: {
+            lunch: [
+                { name: "Brunch (10:30am - 1:30pm)", tags: [] },
+                { name: "Sunday: Smoothie Station", tags: ["Vegetarian"] }
+            ],
+            dinner: [
+                { name: "Dinner (4:45pm - 7:00pm)", tags: [] }
+            ],
+            soup: [
+                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        }
+    },
+    1: { // Week 2: September 28 – October 4
+        Mon: {
+            lunch: [
+                { name: "Beef Picadillo Stuffed Peppers", tags: ["Halal"] },
+                { name: "Mac & Cheese with Assorted Toppings", tags: ["Vegetarian"] },
+                { name: "Omelet Interactive Station", tags: ["Vegetarian"] }
+            ],
+            dinner: [
+                { name: "Beef Bulgogi Rice Bowl", tags: ["Halal"] },
+                { name: "Moroccan Chickpea Stew with Coconut Rice", tags: ["Vegan"] }
+            ],
+            soup: [
+                { name: "Make Your Own Sandwich Station", tags: [] },
+                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        },
+        Tue: {
+            lunch: [
+                { name: "Spaghetti with Meatballs", tags: ["Halal"] },
+                { name: "Sweet Potato and Chickpea Quinoa Bowl", tags: ["Vegan"] }
+            ],
+            dinner: [
+                { name: "Red Thai Curry", tags: [] },
+                { name: "Fish Fillet", tags: [] },
+                { name: "Vegetarian Lettuce Wrap", tags: ["Vegetarian"] },
+                { name: "Bhan Mi Interactive Station", tags: [] }
+            ],
+            soup: [
+                { name: "Make Your Own Sandwich Station", tags: [] },
+                { name: "Grill: Honey Garlic Sausage or All Beef Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        },
+        Wed: {
+            lunch: [
+                { name: "Garlic Thyme Lemon-roasted Chicken with Roasted New Potatoes", tags: ["Halal"] },
+                { name: "Vegetarian Satay", tags: ["Vegetarian"] },
+                { name: "Make-your-own Pizza Day", tags: [] }
+            ],
+            dinner: [
+                { name: "Pulled Pork on a Steamed Bun with Pickled Vegetables", tags: [] },
+                { name: "Vegetable Steamed Bun", tags: ["Vegetarian"] },
+                { name: "Fried Rice", tags: [] }
+            ],
+            soup: [
+                { name: "Make Your Own Sandwich Station", tags: [] },
+                { name: "Grill: Chicken Burger or All Beef Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        },
+        Thu: {
+            lunch: [
+                { name: "Beef Lasagna with Garlic Bread", tags: ["Halal"] },
+                { name: "Ratatouille", tags: ["Vegan"] }
+            ],
+            dinner: [
+                { name: "Beef Mechado (Beef Stew)", tags: ["Halal"] },
+                { name: "Pakoras with Dal Makhani", tags: ["Vegetarian"] },
+                { name: "Dry Noodles Interactive Station", tags: [] }
+            ],
+            soup: [
+                { name: "Make Your Own Sandwich Station", tags: [] },
+                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        },
+        Fri: {
+            lunch: [
+                { name: "Chicken Fajitas", tags: ["Halal"] },
+                { name: "Vegetarian Fajitas", tags: ["Vegetarian"] },
+                { name: "Cilantro Lime Rice", tags: ["Vegan"] },
+                { name: "Pasta Interactive Station", tags: [] }
+            ],
+            dinner: [
+                { name: "Pad See Ew", tags: [] },
+                { name: "Teriyaki Tofu Stirfry", tags: ["Vegetarian"] },
+                { name: "Jasmine Rice", tags: ["Vegan"] }
+            ],
+            soup: [
+                { name: "Make Your Own Sandwich Station", tags: [] },
+                { name: "Grill: Grilled Chicken or All Beef Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        },
+        Sat: {
+            lunch: [
+                { name: "Brunch (10:30am - 1:30pm)", tags: [] },
+                { name: "Saturday: Waffle Station", tags: ["Vegetarian"] }
+            ],
+            dinner: [
+                { name: "Dinner (4:45pm - 7:00pm)", tags: [] }
+            ],
+            soup: [
+                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        },
+        Sun: {
+            lunch: [
+                { name: "Brunch (10:30am - 1:30pm)", tags: [] },
+                { name: "Sunday: Smoothie Station", tags: ["Vegetarian"] }
+            ],
+            dinner: [
+                { name: "Dinner (4:45pm - 7:00pm)", tags: [] }
+            ],
+            soup: [
+                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        }
+    },
+    2: { // Week 3: October 5 – 11
+        Mon: {
+            lunch: [
+                { name: "Chicken Alfredo", tags: ["Halal"] },
+                { name: "Squash and Spinach Lentil Stew", tags: ["Vegan"] },
+                { name: "Warm Bun", tags: [] }
+            ],
+            dinner: [
+                { name: "Teriyaki Fish Fillet Bites Rice Bowl", tags: [] },
+                { name: "Braised Gochujang Tofu", tags: ["Vegetarian"] },
+                { name: "Savory Pancake (Interactive Station)", tags: [] }
+            ],
+            soup: [
+                { name: "Make Your Own Sandwich Station", tags: [] },
+                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        },
+        Tue: {
+            lunch: [
+                { name: "Turkey Schnitzel with Buttered Parsley Potatoes", tags: [] },
+                { name: "Vegetarian Feijoada", tags: ["Vegetarian"] },
+                { name: "Stirfry Station (Interactive Station)", tags: [] }
+            ],
+            dinner: [
+                { name: "Roast Beef with Chimichurri Sauce", tags: ["Halal"] },
+                { name: "Vegetarian Mushroom Stroganoff", tags: ["Vegetarian"] }
+            ],
+            soup: [
+                { name: "Make Your Own Sandwich Station", tags: [] },
+                { name: "Grill: Honey Garlic Sausage or All Beef Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        },
+        Wed: {
+            lunch: [
+                { name: "Chicken Yaki Udon", tags: ["Halal"] },
+                { name: "Vegetarian Dumpling Fried Rice", tags: ["Vegetarian"] },
+                { name: "Make Your Own Pizza Day (Interactive Station)", tags: [] }
+            ],
+            dinner: [
+                { name: "Roasted Pork Loin with Honey Garlic Sauce", tags: [] },
+                { name: "Cheese Bites with Marinara Sauce and Cous Cous Pilaf", tags: ["Vegetarian"] }
+            ],
+            soup: [
+                { name: "Make Your Own Sandwich Station", tags: [] },
+                { name: "Grill: Chicken Burger or All Beef Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        },
+        Thu: {
+            lunch: [
+                { name: "Beefaroni", tags: ["Halal"] },
+                { name: "Eggplant Parmesan (Gluten-Free)", tags: ["Vegetarian", "Gluten-Free"] },
+                { name: "Garlic Bread", tags: ["Vegetarian"] }
+            ],
+            dinner: [
+                { name: "Lemongrass and Lime Grilled Chicken with Noodle Salad", tags: ["Halal"] },
+                { name: "Korean Tofu Stew", tags: ["Vegetarian"] },
+                { name: "Steamed Jasmine Rice", tags: ["Vegan"] },
+                { name: "Mussel Station (Interactive Station)", tags: [] }
+            ],
+            soup: [
+                { name: "Make Your Own Sandwich Station", tags: [] },
+                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        },
+        Fri: {
+            lunch: [
+                { name: "Puttanesca Baked Fish", tags: [] },
+                { name: "Caponata Flatbread", tags: ["Vegetarian"] },
+                { name: "Vietnamese Fresh Roll or Salad Bowl Station (Interactive Station)", tags: [] }
+            ],
+            dinner: [
+                { name: "Burrito Wrap with Plantains or Sweet Potato Fries", tags: [] },
+                { name: "Quinoa Risotto with Roasted Tomato and Pesto", tags: ["Vegetarian"] }
+            ],
+            soup: [
+                { name: "Make Your Own Sandwich Station", tags: [] },
+                { name: "Grill: Grilled Chicken or All Beef Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        },
+        Sat: {
+            lunch: [
+                { name: "Brunch (10:30am - 1:30pm)", tags: [] },
+                { name: "Saturday: Waffle Station", tags: ["Vegetarian"] }
+            ],
+            dinner: [
+                { name: "Dinner (4:45pm - 7:00pm)", tags: [] }
+            ],
+            soup: [
+                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        },
+        Sun: {
+            lunch: [
+                { name: "Brunch (10:30am - 1:30pm)", tags: [] },
+                { name: "Sunday: Smoothie Station", tags: ["Vegetarian"] }
+            ],
+            dinner: [
+                { name: "Dinner (4:45pm - 7:00pm)", tags: [] }
+            ],
+            soup: [
+                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+            ]
+        }
+    }
+};
+
+        const dayKeys = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+        const dayFullNames = { Mon: "Monday", Tue: "Tuesday", Wed: "Wednesday", Thu: "Thursday", Fri: "Friday", Sat: "Saturday", Sun: "Sunday" };
+
+        let currentWeek = 0;
+        let currentDayKey = "Mon";
+        let isStaffAuthenticated = false;
+        let menuDataCache = {};
+
+        // Fetch live menu data from MongoDB via Netlify Functions
+        async function fetchMenuFromDatabase() {
+            try {
+                const response = await fetch('/.netlify/functions/menu');
+                const data = await response.json();
+                
+                if (data && Object.keys(data).length > 0) {
+                    menuDataCache = data;
+                } else {
+                    menuDataCache = defaultMenuData;
+                }
+            } catch (error) {
+                console.error('Error fetching menu from server, using default:', error);
+                menuDataCache = defaultMenuData;
+            }
+        }
+
+        function getActiveMenuData() {
+            return (menuDataCache && Object.keys(menuDataCache).length > 0) ? menuDataCache : defaultMenuData;
+        }
+
+        async function saveMenuData(data) {
+            menuDataCache = data; // Update local cache instantly
+            try {
+                await fetch('/.netlify/functions/menu', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ menuData: data })
+                });
+            } catch (error) {
+                console.error('Error saving menu to server:', error);
+                alert('Warning: Changes saved locally, but failed to sync to the cloud database.');
+            }
+        }
+
+        function getCycleStartDate() {
+            const savedDate = localStorage.getItem('renison_cycle_start_date');
+            if (savedDate) {
+                return new Date(savedDate);
+            }
+            const defaultDate = new Date(2026, 8, 21);
+            localStorage.setItem('renison_cycle_start_date', defaultDate.toISOString());
+            return defaultDate;
+        }
+
+        function setCycleStartDate(dateObj) {
+            localStorage.setItem('renison_cycle_start_date', dateObj.toISOString());
+            updateDateLabel();
+            renderDayTabs();
+            renderMenus();
+        }
+
+        function checkAndAutoRollover() {
+            const baseDate = getCycleStartDate();
+            const today = new Date();
+            const msInWeek = 7 * 24 * 60 * 60 * 1000;
+            
+            if (today - baseDate >= msInWeek) {
+                const weeksToShift = Math.floor((today - baseDate) / msInWeek);
+                baseDate.setDate(baseDate.getDate() + (weeksToShift * 7));
+                localStorage.setItem('renison_cycle_start_date', baseDate.toISOString());
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            checkAndAutoRollover();
+            setTodayAsDefaultDay();
+            
+            await fetchMenuFromDatabase();
+            
+            updateDateLabel();
+            renderDayTabs();
+            renderMenus();
+        });
+
+        function setTodayAsDefaultDay() {
+            const today = new Date().getDay();
+            const dayMap = { 1: "Mon", 2: "Tue", 3: "Wed", 4: "Thu", 5: "Fri", 6: "Sat", 0: "Sun" };
+            currentDayKey = dayMap[today] || "Mon";
+        }
+
+        function updateDateLabel() {
+            const baseDate = getCycleStartDate();
+            
+            const mondayThisWeek = new Date(baseDate);
+            mondayThisWeek.setDate(baseDate.getDate() + (currentWeek * 7));
+
+            const sundayThisWeek = new Date(mondayThisWeek);
+            sundayThisWeek.setDate(sundayThisWeek.getDate() + 6);
+
+            const options = { month: 'short', day: 'numeric' };
+            const rangeStr = `${mondayThisWeek.toLocaleDateString('en-US', options)} – ${sundayThisWeek.toLocaleDateString('en-US', options)}, ${sundayThisWeek.getFullYear()}`;
+            
+            const weekNames = ["This Week: ", "Week 2: ", "Week 3: ", "Week 4: "];
+            document.getElementById('current-week-label').innerText = weekNames[currentWeek] + rangeStr;
+
+            const displayElement = document.getElementById('display-cycle-start-date');
+            if (displayElement) {
+                displayElement.innerText = baseDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            }
+        }
+
+        function switchWeek(weekIndex) {
+            currentWeek = weekIndex;
+            for (let i = 0; i < 4; i++) {
+                const btn = document.getElementById(`week-btn-${i}`);
+                if (i === weekIndex) {
+                    btn.className = "px-3 py-1.5 text-xs font-bold rounded-lg transition whitespace-nowrap bg-renison-navy text-white shadow-sm";
+                } else {
+                    btn.className = "px-3 py-1.5 text-xs font-bold rounded-lg transition whitespace-nowrap text-slate-600 hover:text-slate-900";
+                }
+            }
+            updateDateLabel();
+            renderDayTabs();
+            renderMenus();
+        }
+
+        function selectDay(dayKey) {
+            currentDayKey = dayKey;
+            renderDayTabs();
+            renderMenus();
+        }
+
+        function renderDayTabs() {
+            const container = document.getElementById('day-tabs-container');
+            container.innerHTML = '';
+
+            const baseDate = getCycleStartDate();
+            const weekStartDate = new Date(baseDate);
+            weekStartDate.setDate(baseDate.getDate() + (currentWeek * 7));
+
+            dayKeys.forEach((key, idx) => {
+                const dayDate = new Date(weekStartDate);
+                dayDate.setDate(weekStartDate.getDate() + idx);
+                const dateNum = dayDate.getDate();
+
+                const isSelected = key === currentDayKey;
+                const activeClasses = isSelected 
+                    ? "bg-renison-navy text-white shadow-md scale-[1.02]" 
+                    : "bg-slate-50 text-slate-600 hover:bg-slate-100";
+
+                const btn = document.createElement('button');
+                btn.onclick = () => selectDay(key);
+                btn.className = `p-2 rounded-xl transition flex flex-col items-center justify-center ${activeClasses}`;
+                btn.innerHTML = `
+                    <span class="text-[10px] font-bold uppercase ${isSelected ? 'text-renison-lightGold' : 'text-slate-400'}">${key}</span>
+                    <span class="text-xs sm:text-sm font-extrabold mt-0.5">${dateNum}</span>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        function renderMenus() {
+            const menuContainer = document.getElementById('menu-container');
+            menuContainer.innerHTML = '';
+
+            const activeData = getActiveMenuData();
+            const dayMenu = activeData[currentWeek]?.[currentDayKey] || { lunch: [], dinner: [], soup: [] };
+
+            const categories = [
+                { key: 'lunch', title: 'Lunch', icon: 'fa-sun', color: 'text-amber-500' },
+                { key: 'dinner', title: 'Dinner', icon: 'fa-moon', color: 'text-indigo-600' },
+                { key: 'soup', title: 'Soups & Extras', icon: 'fa-bowl-food', color: 'text-emerald-600' }
+            ];
+
+            categories.forEach(cat => {
+                const items = dayMenu[cat.key] || [];
+                
+                let itemsHtml = items.length > 0 
+                    ? items.map(item => `
+                        <div class="bg-slate-50/90 border border-slate-200/60 rounded-xl p-3 space-y-2">
+                            <p class="text-xs font-bold text-slate-800 leading-snug">${item.name}</p>
+                            ${item.tags && item.tags.length > 0 ? `
+                                <div class="flex flex-wrap gap-1">
+                                    ${item.tags.map(tag => `<span class="px-2 py-0.5 text-[9px] font-extrabold rounded-full ${getTagClass(tag)}">${tag}</span>`).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('')
+                    : `<p class="text-xs text-slate-400 italic py-4 text-center">No items listed for this meal slot.</p>`;
+
+                const card = document.createElement('div');
+                card.className = "bg-white/95 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4 flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center gap-2 pb-3 border-b border-slate-100">
+                            <i class="fa-solid ${cat.icon} ${cat.color} text-sm"></i>
+                            <h3 class="font-bold text-sm text-slate-800 uppercase tracking-wide">${cat.title}</h3>
+                        </div>
+                        <div class="space-y-2.5 mt-4">
+                            ${itemsHtml}
+                        </div>
+                    </div>
+                `;
+                menuContainer.appendChild(card);
+            });
+        }
+
+        function getTagClass(tag) {
+            switch(tag) {
+                case 'Halal': return 'bg-emerald-100 text-emerald-800';
+                case 'Vegetarian': return 'bg-green-100 text-green-800';
+                case 'Vegan': return 'bg-teal-100 text-teal-800';
+                case 'Gluten-Free': return 'bg-amber-100 text-amber-800';
+                default: return 'bg-slate-100 text-slate-700';
+            }
+        }
+
+        function toggleStaffModal() {
+            const modal = document.getElementById('staff-modal');
+            modal.classList.toggle('hidden');
+        }
+
+        function verifyPin() {
+            const pinInput = document.getElementById('staff-pin-input').value;
+            const errorMsg = document.getElementById('pin-error-msg');
+            
+            if (pinInput === "2026") {
+                isStaffAuthenticated = true;
+                errorMsg.classList.add('hidden');
+                document.getElementById('staff-auth-section').classList.add('hidden');
+                document.getElementById('staff-dashboard').classList.remove('hidden');
+                updateDateLabel();
+                populateDropItemList();
+            } else {
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        function switchStaffTab(tabKey) {
+            ['add', 'clear', 'reset', 'support'].forEach(t => {
+                const content = document.getElementById(`staff-tab-${t}-content`);
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (content) content.classList.add('hidden');
+                if (btn) btn.className = "pb-2 px-2 text-slate-400 hover:text-slate-700 whitespace-nowrap";
+            });
+            document.getElementById(`staff-tab-${tabKey}-content`).classList.remove('hidden');
+            document.getElementById(`tab-btn-${tabKey}`).className = "pb-2 px-2 text-renison-navy border-b-2 border-renison-navy font-bold whitespace-nowrap";
+
+            if (tabKey === 'clear') {
+                populateDropItemList();
+            }
+        }
+
+        function toggleRecipeInput(show) {
+            const container = document.getElementById('recipe-details-container');
+            const recipeText = document.getElementById('recipe-text');
+            if (show) {
+                container.classList.remove('hidden');
+                recipeText.required = true;
+            } else {
+                container.classList.add('hidden');
+                recipeText.required = false;
+                recipeText.value = '';
+            }
+        }
+
+        function handleFeedbackSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('feedback-name').value;
+            const email = document.getElementById('feedback-email').value;
+            const feedback = document.getElementById('feedback-text').value;
+            const hasRecipe = document.querySelector('input[name="has-recipe"]:checked').value;
+            const recipe = document.getElementById('recipe-text').value;
+
+            alert("Thank you! Your feedback has been successfully submitted to Renison Food Services.");
+            event.target.reset();
+            toggleRecipeInput(false);
+        }
+
+        async function addCustomItem() {
+            const week = document.getElementById('input-week').value;
+            const day = document.getElementById('input-day').value;
+            const meal = document.getElementById('input-meal').value;
+            const title = document.getElementById('input-title').value.trim();
+
+            if (!title) {
+                alert('Please enter an item title.');
+                return;
+            }
+
+            const checkedTags = Array.from(document.querySelectorAll('.diet-check:checked')).map(cb => cb.value);
+
+            const activeData = getActiveMenuData();
+            if (!activeData[week][day][meal]) {
+                activeData[week][day][meal] = [];
+            }
+            activeData[week][day][meal].push({ name: title, tags: checkedTags });
+
+            await saveMenuData(activeData);
+            document.getElementById('input-title').value = '';
+            document.querySelectorAll('.diet-check').forEach(cb => cb.checked = false);
+            
+            renderMenus();
+            populateDropItemList();
+            alert(`Added "${title}" to Week ${parseInt(week)+1} ${dayFullNames[day]} ${meal.toUpperCase()}.`);
+        }
+
+        function populateDropItemList() {
+            const week = document.getElementById('clear-week').value;
+            const day = document.getElementById('clear-day').value;
+            const meal = document.getElementById('clear-meal').value;
+            const selectEl = document.getElementById('drop-item-select');
+
+            const activeData = getActiveMenuData();
+            const items = activeData[week]?.[day]?.[meal] || [];
+
+            selectEl.innerHTML = '';
+
+            if (items.length === 0) {
+                selectEl.innerHTML = '<option value="">No items available in this slot</option>';
+                selectEl.disabled = true;
+                return;
+            }
+
+            selectEl.disabled = false;
+            items.forEach((item, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = item.name;
+                selectEl.appendChild(option);
+            });
+        }
+
+        async function dropSingleItem() {
+            const week = document.getElementById('clear-week').value;
+            const day = document.getElementById('clear-day').value;
+            const meal = document.getElementById('clear-meal').value;
+            const selectedIdx = document.getElementById('drop-item-select').value;
+
+            if (selectedIdx === "" || selectedIdx === null) {
+                alert("No item selected to drop.");
+                return;
+            }
+
+            const activeData = getActiveMenuData();
+            const items = activeData[week]?.[day]?.[meal] || [];
+
+            const droppedItemName = items[selectedIdx]?.name;
+            items.splice(selectedIdx, 1);
+            activeData[week][day][meal] = items;
+
+            await saveMenuData(activeData);
+            renderMenus();
+            populateDropItemList();
+            alert(`Dropped item "${droppedItemName}" successfully.`);
+        }
+
+        async function clearSelectedMeal() {
+            const week = document.getElementById('clear-week').value;
+            const day = document.getElementById('clear-day').value;
+            const meal = document.getElementById('clear-meal').value;
+
+            const activeData = getActiveMenuData();
+            activeData[week][day][meal] = [];
+            
+            await saveMenuData(activeData);
+            renderMenus();
+            populateDropItemList();
+            alert(`Cleared all ${meal.toUpperCase()} items for Week ${parseInt(week)+1} ${dayFullNames[day]}.`);
+        }
+
+        function advanceWeekCycle(days) {
+            const currentBase = getCycleStartDate();
+            currentBase.setDate(currentBase.getDate() + days);
+            setCycleStartDate(currentBase);
+            alert(`Cycle start date updated! "This Week" now starts on ${currentBase.toDateString()}`);
+        }
+
+        function setCurrentWeekToToday() {
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            const distanceToMonday = (dayOfWeek === 0 ? -6 : 1 - dayOfWeek);
+            
+            const recentMonday = new Date(today);
+            recentMonday.setDate(today.getDate() + distanceToMonday);
+            recentMonday.setHours(0, 0, 0, 0);
+
+            setCycleStartDate(recentMonday);
+            alert(`Cycle reset to active week starting Monday, ${recentMonday.toLocaleDateString()}`);
+        }
+
+        function resetToDefaultMenus() {
+            if (confirm("Are you sure you want to reset all menus back to default? Custom entries will be removed.")) {
+                saveMenuData(defaultMenuData).then(() => {
+                    renderMenus();
+                    populateDropItemList();
+                    alert("Menus restored to default globally!");
+                });
+            }
+        }
+    </script>
+</body>
+</html>
