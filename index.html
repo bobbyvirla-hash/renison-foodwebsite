@@ -12,7 +12,7 @@
                 extend: {
                     colors: {
                         renison: {
-                            navy: '#2E6F40',       /* Forest Green (Footer match) */
+                            navy: '#2E6F40',       /* Forest Green */
                             gold: '#D4AF37',
                             lightGold: '#F4E8C1',
                             darkNavy: '#1E4A29',   /* Darker Forest Green for hovers */
@@ -36,7 +36,6 @@
             background-position: center;
             background-attachment: fixed;
         }
-        /* Fallback background overlay to ensure contrast */
         body::before {
             content: '';
             position: fixed;
@@ -376,325 +375,33 @@
     <!-- Application Script -->
     <script>
         const defaultMenuData = {
-    0: { // Week 1: September 21 – 27
-        Mon: {
-            lunch: [
-                { name: "Buttered Chicken", tags: ["Halal"] },
-                { name: "Butter Paneer with Naan Bread", tags: ["Vegetarian"] },
-                { name: "Fried Fish Interactive Station", tags: [] }
-            ],
-            dinner: [
-                { name: "Pork Charsiu", tags: [] },
-                { name: "Roasted Garlic and Spinach Rotini", tags: ["Vegetarian"] }
-            ],
-            soup: [
-                { name: "Make Your Own Sandwich Station", tags: [] },
-                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        },
-        Tue: {
-            lunch: [
-                { name: "Ground Beef Ragu and Gnocchi", tags: ["Halal"] },
-                { name: "Vegetarian Samosa", tags: ["Vegetarian"] },
-                { name: "Korean Rice Cake Interactive Station", tags: [] }
-            ],
-            dinner: [
-                { name: "Chicken Shawarma and Vegetarian Shawarma with Turmeric Rice", tags: ["Halal", "Vegetarian"] }
-            ],
-            soup: [
-                { name: "Make Your Own Sandwich Station", tags: [] },
-                { name: "Grill: Honey Garlic Sausage or All Beef Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        },
-        Wed: {
-            lunch: [
-                { name: "Pepper Steak Stirfry", tags: ["Halal"] },
-                { name: "Vegetarian Fish Sticks with Fries and Coleslaw", tags: ["Vegetarian"] },
-                { name: "Make-your-own Pizza Day Interactive Station", tags: [] }
-            ],
-            dinner: [
-                { name: "Swedish Meatballs with Mashed Potatoes", tags: [] },
-                { name: "Breaded Eggplant with Marinara Sauce and Parmesan Cheese on the Bun", tags: ["Vegetarian"] }
-            ],
-            soup: [
-                { name: "Make Your Own Sandwich Station", tags: [] },
-                { name: "Grill: Chicken Burger or All Beef Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        },
-        Thu: {
-            lunch: [
-                { name: "Shaved Pork with Roasted Peppers and Sauteed Spinach on the Bun", tags: [] },
-                { name: "Vegetarian Cottage Pie", tags: ["Vegetarian"] }
-            ],
-            dinner: [
-                { name: "Gochujang Chicken Bites", tags: ["Halal"] },
-                { name: "Vegetarian Japchae", tags: ["Vegetarian"] },
-                { name: "Kimbap or Bibimbap Interaction Station", tags: [] }
-            ],
-            soup: [
-                { name: "Make Your Own Sandwich Station", tags: [] },
-                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        },
-        Fri: {
-            lunch: [
-                { name: "Beef Taco with Assorted Toppings and Mexican Rice", tags: ["Halal"] },
-                { name: "Vegetarian Burrito", tags: ["Vegetarian"] }
-            ],
-            dinner: [
-                { name: "Miso Glazed Fish Fillet", tags: [] },
-                { name: "Cheese Tortellini with Blush Sauce", tags: ["Vegetarian"] },
-                { name: "Thai Coconut Noodle Soup Interactive Station", tags: [] }
-            ],
-            soup: [
-                { name: "Make Your Own Sandwich Station", tags: [] },
-                { name: "Grill: Grilled Chicken or All Beef Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        },
-        Sat: {
-            lunch: [
-                { name: "Brunch (10:30am - 1:30pm)", tags: [] },
-                { name: "Saturday: Waffle Station", tags: ["Vegetarian"] }
-            ],
-            dinner: [
-                { name: "Dinner (4:45pm - 7:00pm)", tags: [] }
-            ],
-            soup: [
-                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        },
-        Sun: {
-            lunch: [
-                { name: "Brunch (10:30am - 1:30pm)", tags: [] },
-                { name: "Sunday: Smoothie Station", tags: ["Vegetarian"] }
-            ],
-            dinner: [
-                { name: "Dinner (4:45pm - 7:00pm)", tags: [] }
-            ],
-            soup: [
-                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        }
-    },
-    1: { // Week 2: September 28 – October 4
-        Mon: {
-            lunch: [
-                { name: "Beef Picadillo Stuffed Peppers", tags: ["Halal"] },
-                { name: "Mac & Cheese with Assorted Toppings", tags: ["Vegetarian"] },
-                { name: "Omelet Interactive Station", tags: ["Vegetarian"] }
-            ],
-            dinner: [
-                { name: "Beef Bulgogi Rice Bowl", tags: ["Halal"] },
-                { name: "Moroccan Chickpea Stew with Coconut Rice", tags: ["Vegan"] }
-            ],
-            soup: [
-                { name: "Make Your Own Sandwich Station", tags: [] },
-                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        },
-        Tue: {
-            lunch: [
-                { name: "Spaghetti with Meatballs", tags: ["Halal"] },
-                { name: "Sweet Potato and Chickpea Quinoa Bowl", tags: ["Vegan"] }
-            ],
-            dinner: [
-                { name: "Red Thai Curry", tags: [] },
-                { name: "Fish Fillet", tags: [] },
-                { name: "Vegetarian Lettuce Wrap", tags: ["Vegetarian"] },
-                { name: "Bhan Mi Interactive Station", tags: [] }
-            ],
-            soup: [
-                { name: "Make Your Own Sandwich Station", tags: [] },
-                { name: "Grill: Honey Garlic Sausage or All Beef Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        },
-        Wed: {
-            lunch: [
-                { name: "Garlic Thyme Lemon-roasted Chicken with Roasted New Potatoes", tags: ["Halal"] },
-                { name: "Vegetarian Satay", tags: ["Vegetarian"] },
-                { name: "Make-your-own Pizza Day", tags: [] }
-            ],
-            dinner: [
-                { name: "Pulled Pork on a Steamed Bun with Pickled Vegetables", tags: [] },
-                { name: "Vegetable Steamed Bun", tags: ["Vegetarian"] },
-                { name: "Fried Rice", tags: [] }
-            ],
-            soup: [
-                { name: "Make Your Own Sandwich Station", tags: [] },
-                { name: "Grill: Chicken Burger or All Beef Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        },
-        Thu: {
-            lunch: [
-                { name: "Beef Lasagna with Garlic Bread", tags: ["Halal"] },
-                { name: "Ratatouille", tags: ["Vegan"] }
-            ],
-            dinner: [
-                { name: "Beef Mechado (Beef Stew)", tags: ["Halal"] },
-                { name: "Pakoras with Dal Makhani", tags: ["Vegetarian"] },
-                { name: "Dry Noodles Interactive Station", tags: [] }
-            ],
-            soup: [
-                { name: "Make Your Own Sandwich Station", tags: [] },
-                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        },
-        Fri: {
-            lunch: [
-                { name: "Chicken Fajitas", tags: ["Halal"] },
-                { name: "Vegetarian Fajitas", tags: ["Vegetarian"] },
-                { name: "Cilantro Lime Rice", tags: ["Vegan"] },
-                { name: "Pasta Interactive Station", tags: [] }
-            ],
-            dinner: [
-                { name: "Pad See Ew", tags: [] },
-                { name: "Teriyaki Tofu Stirfry", tags: ["Vegetarian"] },
-                { name: "Jasmine Rice", tags: ["Vegan"] }
-            ],
-            soup: [
-                { name: "Make Your Own Sandwich Station", tags: [] },
-                { name: "Grill: Grilled Chicken or All Beef Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        },
-        Sat: {
-            lunch: [
-                { name: "Brunch (10:30am - 1:30pm)", tags: [] },
-                { name: "Saturday: Waffle Station", tags: ["Vegetarian"] }
-            ],
-            dinner: [
-                { name: "Dinner (4:45pm - 7:00pm)", tags: [] }
-            ],
-            soup: [
-                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        },
-        Sun: {
-            lunch: [
-                { name: "Brunch (10:30am - 1:30pm)", tags: [] },
-                { name: "Sunday: Smoothie Station", tags: ["Vegetarian"] }
-            ],
-            dinner: [
-                { name: "Dinner (4:45pm - 7:00pm)", tags: [] }
-            ],
-            soup: [
-                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        }
-    },
-    2: { // Week 3: October 5 – 11
-        Mon: {
-            lunch: [
-                { name: "Chicken Alfredo", tags: ["Halal"] },
-                { name: "Squash and Spinach Lentil Stew", tags: ["Vegan"] },
-                { name: "Warm Bun", tags: [] }
-            ],
-            dinner: [
-                { name: "Teriyaki Fish Fillet Bites Rice Bowl", tags: [] },
-                { name: "Braised Gochujang Tofu", tags: ["Vegetarian"] },
-                { name: "Savory Pancake (Interactive Station)", tags: [] }
-            ],
-            soup: [
-                { name: "Make Your Own Sandwich Station", tags: [] },
-                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        },
-        Tue: {
-            lunch: [
-                { name: "Turkey Schnitzel with Buttered Parsley Potatoes", tags: [] },
-                { name: "Vegetarian Feijoada", tags: ["Vegetarian"] },
-                { name: "Stirfry Station (Interactive Station)", tags: [] }
-            ],
-            dinner: [
-                { name: "Roast Beef with Chimichurri Sauce", tags: ["Halal"] },
-                { name: "Vegetarian Mushroom Stroganoff", tags: ["Vegetarian"] }
-            ],
-            soup: [
-                { name: "Make Your Own Sandwich Station", tags: [] },
-                { name: "Grill: Honey Garlic Sausage or All Beef Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        },
-        Wed: {
-            lunch: [
-                { name: "Chicken Yaki Udon", tags: ["Halal"] },
-                { name: "Vegetarian Dumpling Fried Rice", tags: ["Vegetarian"] },
-                { name: "Make Your Own Pizza Day (Interactive Station)", tags: [] }
-            ],
-            dinner: [
-                { name: "Roasted Pork Loin with Honey Garlic Sauce", tags: [] },
-                { name: "Cheese Bites with Marinara Sauce and Cous Cous Pilaf", tags: ["Vegetarian"] }
-            ],
-            soup: [
-                { name: "Make Your Own Sandwich Station", tags: [] },
-                { name: "Grill: Chicken Burger or All Beef Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        },
-        Thu: {
-            lunch: [
-                { name: "Beefaroni", tags: ["Halal"] },
-                { name: "Eggplant Parmesan (Gluten-Free)", tags: ["Vegetarian", "Gluten-Free"] },
-                { name: "Garlic Bread", tags: ["Vegetarian"] }
-            ],
-            dinner: [
-                { name: "Lemongrass and Lime Grilled Chicken with Noodle Salad", tags: ["Halal"] },
-                { name: "Korean Tofu Stew", tags: ["Vegetarian"] },
-                { name: "Steamed Jasmine Rice", tags: ["Vegan"] },
-                { name: "Mussel Station (Interactive Station)", tags: [] }
-            ],
-            soup: [
-                { name: "Make Your Own Sandwich Station", tags: [] },
-                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        },
-        Fri: {
-            lunch: [
-                { name: "Puttanesca Baked Fish", tags: [] },
-                { name: "Caponata Flatbread", tags: ["Vegetarian"] },
-                { name: "Vietnamese Fresh Roll or Salad Bowl Station (Interactive Station)", tags: [] }
-            ],
-            dinner: [
-                { name: "Burrito Wrap with Plantains or Sweet Potato Fries", tags: [] },
-                { name: "Quinoa Risotto with Roasted Tomato and Pesto", tags: ["Vegetarian"] }
-            ],
-            soup: [
-                { name: "Make Your Own Sandwich Station", tags: [] },
-                { name: "Grill: Grilled Chicken or All Beef Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        },
-        Sat: {
-            lunch: [
-                { name: "Brunch (10:30am - 1:30pm)", tags: [] },
-                { name: "Saturday: Waffle Station", tags: ["Vegetarian"] }
-            ],
-            dinner: [
-                { name: "Dinner (4:45pm - 7:00pm)", tags: [] }
-            ],
-            soup: [
-                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        },
-        Sun: {
-            lunch: [
-                { name: "Brunch (10:30am - 1:30pm)", tags: [] },
-                { name: "Sunday: Smoothie Station", tags: ["Vegetarian"] }
-            ],
-            dinner: [
-                { name: "Dinner (4:45pm - 7:00pm)", tags: [] }
-            ],
-            soup: [
-                { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
-            ]
-        }
-    },
-    3: { // Week 4
-        Mon: { lunch: [], dinner: [], soup: [] },
-        Tue: { lunch: [], dinner: [], soup: [] },
-        Wed: { lunch: [], dinner: [], soup: [] },
-        Thu: { lunch: [], dinner: [], soup: [] },
-        Fri: { lunch: [], dinner: [], soup: [] },
-        Sat: { lunch: [], dinner: [], soup: [] },
-        Sun: { lunch: [], dinner: [], soup: [] }
-    }       
-};
+            0: { // Week 1
+                Mon: {
+                    lunch: [
+                        { name: "Buttered Chicken", tags: ["Halal"] },
+                        { name: "Butter Paneer with Naan Bread", tags: ["Vegetarian"] },
+                        { name: "Fried Fish Interactive Station", tags: [] }
+                    ],
+                    dinner: [
+                        { name: "Pork Charsiu", tags: [] },
+                        { name: "Roasted Garlic and Spinach Rotini", tags: ["Vegetarian"] }
+                    ],
+                    soup: [
+                        { name: "Make Your Own Sandwich Station", tags: [] },
+                        { name: "Grill: Burger, Hot Dog, Veggie Burger/Hot Dog, Grilled Cheese", tags: [] }
+                    ]
+                },
+                Tue: { lunch: [], dinner: [], soup: [] },
+                Wed: { lunch: [], dinner: [], soup: [] },
+                Thu: { lunch: [], dinner: [], soup: [] },
+                Fri: { lunch: [], dinner: [], soup: [] },
+                Sat: { lunch: [], dinner: [], soup: [] },
+                Sun: { lunch: [], dinner: [], soup: [] }
+            },
+            1: { Mon: { lunch: [], dinner: [], soup: [] }, Tue: { lunch: [], dinner: [], soup: [] }, Wed: { lunch: [], dinner: [], soup: [] }, Thu: { lunch: [], dinner: [], soup: [] }, Fri: { lunch: [], dinner: [], soup: [] }, Sat: { lunch: [], dinner: [], soup: [] }, Sun: { lunch: [], dinner: [], soup: [] } },
+            2: { Mon: { lunch: [], dinner: [], soup: [] }, Tue: { lunch: [], dinner: [], soup: [] }, Wed: { lunch: [], dinner: [], soup: [] }, Thu: { lunch: [], dinner: [], soup: [] }, Fri: { lunch: [], dinner: [], soup: [] }, Sat: { lunch: [], dinner: [], soup: [] }, Sun: { lunch: [], dinner: [], soup: [] } },
+            3: { Mon: { lunch: [], dinner: [], soup: [] }, Tue: { lunch: [], dinner: [], soup: [] }, Wed: { lunch: [], dinner: [], soup: [] }, Thu: { lunch: [], dinner: [], soup: [] }, Fri: { lunch: [], dinner: [], soup: [] }, Sat: { lunch: [], dinner: [], soup: [] }, Sun: { lunch: [], dinner: [], soup: [] } }
+        };
 
         const dayKeys = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
         const dayFullNames = { Mon: "Monday", Tue: "Tuesday", Wed: "Wednesday", Thu: "Thursday", Fri: "Friday", Sat: "Saturday", Sun: "Sunday" };
@@ -704,7 +411,6 @@
         let isStaffAuthenticated = false;
         let menuDataCache = {};
 
-        // Fetch live menu data from MongoDB via Netlify Functions
         async function fetchMenuFromDatabase() {
             try {
                 const response = await fetch('/api/menu');
@@ -722,11 +428,14 @@
         }
 
         function getActiveMenuData() {
-            return (menuDataCache && Object.keys(menuDataCache).length > 0) ? menuDataCache : defaultMenuData;
+            if (!menuDataCache || Object.keys(menuDataCache).length === 0) {
+                menuDataCache = defaultMenuData;
+            }
+            return menuDataCache;
         }
 
         async function saveMenuData(data) {
-            menuDataCache = data; // Update local cache instantly
+            menuDataCache = data;
             try {
                 await fetch('/api/menu', {
                     method: 'POST',
@@ -735,7 +444,6 @@
                 });
             } catch (error) {
                 console.error('Error saving menu to server:', error);
-                alert('Warning: Changes saved locally, but failed to sync to the cloud database.');
             }
         }
 
@@ -756,24 +464,9 @@
             renderMenus();
         }
 
-        function checkAndAutoRollover() {
-            const baseDate = getCycleStartDate();
-            const today = new Date();
-            const msInWeek = 7 * 24 * 60 * 60 * 1000;
-            
-            if (today - baseDate >= msInWeek) {
-                const weeksToShift = Math.floor((today - baseDate) / msInWeek);
-                baseDate.setDate(baseDate.getDate() + (weeksToShift * 7));
-                localStorage.setItem('renison_cycle_start_date', baseDate.toISOString());
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', async () => {
-            checkAndAutoRollover();
             setTodayAsDefaultDay();
-            
             await fetchMenuFromDatabase();
-            
             updateDateLabel();
             renderDayTabs();
             renderMenus();
@@ -787,7 +480,6 @@
 
         function updateDateLabel() {
             const baseDate = getCycleStartDate();
-            
             const mondayThisWeek = new Date(baseDate);
             mondayThisWeek.setDate(baseDate.getDate() + (currentWeek * 7));
 
@@ -861,7 +553,12 @@
             menuContainer.innerHTML = '';
 
             const activeData = getActiveMenuData();
-            const dayMenu = activeData[currentWeek]?.[currentDayKey] || { lunch: [], dinner: [], soup: [] };
+            
+            // Safe-guard structure validation for any week
+            if (!activeData[currentWeek]) activeData[currentWeek] = {};
+            if (!activeData[currentWeek][currentDayKey]) activeData[currentWeek][currentDayKey] = { lunch: [], dinner: [], soup: [] };
+
+            const dayMenu = activeData[currentWeek][currentDayKey];
 
             const categories = [
                 { key: 'lunch', title: 'Lunch', icon: 'fa-sun', color: 'text-amber-500' },
@@ -913,8 +610,7 @@
         }
 
         function toggleStaffModal() {
-            const modal = document.getElementById('staff-modal');
-            modal.classList.toggle('hidden');
+            document.getElementById('staff-modal').classList.toggle('hidden');
         }
 
         function verifyPin() {
@@ -963,12 +659,6 @@
 
         function handleFeedbackSubmit(event) {
             event.preventDefault();
-            const name = document.getElementById('feedback-name').value;
-            const email = document.getElementById('feedback-email').value;
-            const feedback = document.getElementById('feedback-text').value;
-            const hasRecipe = document.querySelector('input[name="has-recipe"]:checked').value;
-            const recipe = document.getElementById('recipe-text').value;
-
             alert("Thank you! Your feedback has been successfully submitted to Renison Food Services.");
             event.target.reset();
             toggleRecipeInput(false);
@@ -988,9 +678,12 @@
             const checkedTags = Array.from(document.querySelectorAll('.diet-check:checked')).map(cb => cb.value);
 
             const activeData = getActiveMenuData();
-            if (!activeData[week][day][meal]) {
-                activeData[week][day][meal] = [];
-            }
+            
+            // Robust check to ensure Week 4 / any week object path exists before pushing
+            if (!activeData[week]) activeData[week] = {};
+            if (!activeData[week][day]) activeData[week][day] = {};
+            if (!activeData[week][day][meal]) activeData[week][day][meal] = [];
+
             activeData[week][day][meal].push({ name: title, tags: checkedTags });
 
             await saveMenuData(activeData);
@@ -1058,7 +751,9 @@
             const meal = document.getElementById('clear-meal').value;
 
             const activeData = getActiveMenuData();
-            activeData[week][day][meal] = [];
+            if (activeData[week]?.[day]) {
+                activeData[week][day][meal] = [];
+            }
             
             await saveMenuData(activeData);
             renderMenus();
