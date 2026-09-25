@@ -196,7 +196,7 @@
                 <div id="staff-auth-section" class="space-y-4">
                     <p class="text-xs text-slate-600 font-medium">Enter your staff authorization PIN to manage cafeteria menus and week schedules.</p>
                     <div>
-                        <input type="password" id="staff-pin-input" placeholder="Enter Staff PIN (Default: 2026)" class="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-renison-navy">
+                        <input type="password" id="staff-pin-input" placeholder="Enter Staff PIN: " class="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-renison-navy">
                         <p id="pin-error-msg" class="text-rose-600 text-xs mt-1 font-semibold hidden">Incorrect PIN. Try again.</p>
                     </div>
                     <button onclick="verifyPin()" class="w-full bg-renison-navy hover:bg-renison-darkNavy text-white font-bold py-3 rounded-xl text-sm transition shadow-md">
@@ -911,7 +911,7 @@
             const pinInput = document.getElementById('staff-pin-input').value;
             const errorMsg = document.getElementById('pin-error-msg');
             
-            if (pinInput === "2026") {
+            if (pinInput === "1959") {
                 isStaffAuthenticated = true;
                 errorMsg.classList.add('hidden');
                 document.getElementById('staff-auth-section').classList.add('hidden');
