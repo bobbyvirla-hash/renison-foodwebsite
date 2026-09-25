@@ -10,37 +10,30 @@ async function connectToDatabase() {
     return cachedDb;
 }
 
-exports.handler = async (event, context) => {
+export default async function handler(req, res) {
     try {
         const db = await connectToDatabase();
         const collection = db.collection('menus');
 
-        if (event.httpMethod === 'GET') {
+        if (req.method === 'GET') {
             const doc = await collection.findOne({ _id: 'current_menu' });
-            return {
-                statusCode: 200,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(doc ? doc.menuData : {})
-            };
+            return res.status(200).json(doc ? doc.menuData : {});
         }
 
-        if (event.httpMethod === 'POST') {
-            const body = JSON.parse(event.body);
+        if (req.method === 'POST') {
+            const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
             await collection.updateOne(
                 { _id: 'current_menu' },
                 { $set: { menuData: body.menuData } },
                 { upsert: true }
             );
-            return {
-                statusCode: 200,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ success: true })
-            };
+            return res.status(200).json({ success: true });
         }
 
-        return { statusCode: 405, body: 'Method Not Allowed' };
+        res.setHeader('Allow', ['GET', 'POST']);
+        return res.status(405).end('Method Not Allowed');
     } catch (error) {
         console.error('Database error:', error);
-        return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
+        return res.status(500).json({ error: error.message });
     }
-};
+}
