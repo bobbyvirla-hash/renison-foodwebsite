@@ -581,7 +581,7 @@
             ]
         }
     },
-    2: { // Week 3: October 5 – 11
+    2: { // : October 5 – 11
         Mon: {
             lunch: [
                 { name: "Chicken Alfredo", tags: ["Halal"] },
@@ -685,6 +685,43 @@
             ]
         }
     }
+    3: { // Week 4
+        Mon: {
+            lunch: [],
+            dinner: [],
+            soup: []
+        },
+        Tue: {
+            lunch: [],
+            dinner: [],
+            soup: []
+        },
+        Wed: {
+            lunch: [],
+            dinner: [],
+            soup: []
+        },
+        Thu: {
+            lunch: [],
+            dinner: [],
+            soup: []
+        },
+        Fri: {
+            lunch: [],
+            dinner: [],
+            soup: []
+        },
+        Sat: {
+            lunch: [],
+            dinner: [],
+            soup: []
+        },
+        Sun: {
+            lunch: [],
+            dinner: [],
+            soup: []
+        }
+    }       
 };
 
         const dayKeys = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -788,7 +825,7 @@
             const options = { month: 'short', day: 'numeric' };
             const rangeStr = `${mondayThisWeek.toLocaleDateString('en-US', options)} – ${sundayThisWeek.toLocaleDateString('en-US', options)}, ${sundayThisWeek.getFullYear()}`;
             
-            const weekNames = ["This Week: ", "Week 2: ", "Week 3: ", "Week 4: "];
+            const weekNames = ["This Week: ", "Week 2: ", ": ", "Week 4: "];
             document.getElementById('current-week-label').innerText = weekNames[currentWeek] + rangeStr;
 
             const displayElement = document.getElementById('display-cycle-start-date');
