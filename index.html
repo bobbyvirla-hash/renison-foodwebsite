@@ -581,7 +581,7 @@
             ]
         }
     },
-    2: { // : October 5 – 11
+    2: { // Week 3: October 5 – 11
         Mon: {
             lunch: [
                 { name: "Chicken Alfredo", tags: ["Halal"] },
@@ -825,7 +825,7 @@
             const options = { month: 'short', day: 'numeric' };
             const rangeStr = `${mondayThisWeek.toLocaleDateString('en-US', options)} – ${sundayThisWeek.toLocaleDateString('en-US', options)}, ${sundayThisWeek.getFullYear()}`;
             
-            const weekNames = ["This Week: ", "Week 2: ", ": ", "Week 4: "];
+            const weekNames = ["This Week: ", "Week 2: ", "Week 3: ", "Week 4: "];
             document.getElementById('current-week-label').innerText = weekNames[currentWeek] + rangeStr;
 
             const displayElement = document.getElementById('display-cycle-start-date');
