@@ -719,7 +719,7 @@
         async function saveMenuData(data) {
             menuDataCache = data; // Update local cache instantly
             try {
-                await fetch('/.netlify/functions/menu', {
+                await fetch('/api/menu', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ menuData: data })
