@@ -464,12 +464,22 @@
             renderMenus();
         }
 
+        function calculateCurrentWeek() {
+            const baseDate = getCycleStartDate();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            baseDate.setHours(0, 0, 0, 0);
+            const diffTime = today - baseDate;
+            const diffWeeks = Math.floor(Math.floor(diffTime / (1000 * 60 * 60 * 24)) / 7);
+            let weekIndex = diffWeeks % 4;
+            return weekIndex < 0 ? (weekIndex + 4) % 4 : weekIndex;
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             setTodayAsDefaultDay();
+            currentWeek = calculateCurrentWeek();
             await fetchMenuFromDatabase();
-            updateDateLabel();
-            renderDayTabs();
-            renderMenus();
+            switchWeek(currentWeek);
         });
 
         function setTodayAsDefaultDay() {
@@ -502,10 +512,12 @@
             currentWeek = weekIndex;
             for (let i = 0; i < 4; i++) {
                 const btn = document.getElementById(`week-btn-${i}`);
-                if (i === weekIndex) {
-                    btn.className = "px-3 py-1.5 text-xs font-bold rounded-lg transition whitespace-nowrap bg-renison-navy text-white shadow-sm";
-                } else {
-                    btn.className = "px-3 py-1.5 text-xs font-bold rounded-lg transition whitespace-nowrap text-slate-600 hover:text-slate-900";
+                if (btn) {
+                    if (i === weekIndex) {
+                        btn.className = "px-3 py-1.5 text-xs font-bold rounded-lg transition whitespace-nowrap bg-renison-navy text-white shadow-sm";
+                    } else {
+                        btn.className = "px-3 py-1.5 text-xs font-bold rounded-lg transition whitespace-nowrap text-slate-600 hover:text-slate-900";
+                    }
                 }
             }
             updateDateLabel();
@@ -554,7 +566,6 @@
 
             const activeData = getActiveMenuData();
             
-            // Safe-guard structure validation for any week
             if (!activeData[currentWeek]) activeData[currentWeek] = {};
             if (!activeData[currentWeek][currentDayKey]) activeData[currentWeek][currentDayKey] = { lunch: [], dinner: [], soup: [] };
 
@@ -679,7 +690,6 @@
 
             const activeData = getActiveMenuData();
             
-            // Robust check to ensure Week 4 / any week object path exists before pushing
             if (!activeData[week]) activeData[week] = {};
             if (!activeData[week][day]) activeData[week][day] = {};
             if (!activeData[week][day][meal]) activeData[week][day][meal] = [];
