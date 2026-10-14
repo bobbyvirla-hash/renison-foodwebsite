@@ -410,20 +410,28 @@
         let currentDayKey = "Mon";
         let isStaffAuthenticated = false;
         let menuDataCache = {};
+        let cycleStartDateCache = null;
 
         async function fetchMenuFromDatabase() {
             try {
                 const response = await fetch('/api/menu');
                 const data = await response.json();
                 
-                if (data && Object.keys(data).length > 0) {
-                    menuDataCache = data;
+                if (data && data.menuData && Object.keys(data.menuData).length > 0) {
+                    menuDataCache = data.menuData;
                 } else {
                     menuDataCache = defaultMenuData;
                 }
+
+                if (data && data.cycleStartDate) {
+                    cycleStartDateCache = new Date(data.cycleStartDate);
+                } else {
+                    cycleStartDateCache = new Date(2026, 8, 21);
+                }
             } catch (error) {
-                console.error('Error fetching menu from server, using default:', error);
+                console.error('Error fetching data from server, using default:', error);
                 menuDataCache = defaultMenuData;
+                cycleStartDateCache = new Date(2026, 8, 21);
             }
         }
 
@@ -434,31 +442,31 @@
             return menuDataCache;
         }
 
-        async function saveMenuData(data) {
-            menuDataCache = data;
+        async function saveDataToBackend() {
             try {
                 await fetch('/api/menu', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ menuData: data })
+                    body: JSON.stringify({ 
+                        menuData: menuDataCache,
+                        cycleStartDate: cycleStartDateCache.toISOString()
+                    })
                 });
             } catch (error) {
-                console.error('Error saving menu to server:', error);
+                console.error('Error saving data to server:', error);
             }
         }
 
         function getCycleStartDate() {
-            const savedDate = localStorage.getItem('renison_cycle_start_date');
-            if (savedDate) {
-                return new Date(savedDate);
+            if (!cycleStartDateCache) {
+                cycleStartDateCache = new Date(2026, 8, 21);
             }
-            const defaultDate = new Date(2026, 8, 21);
-            localStorage.setItem('renison_cycle_start_date', defaultDate.toISOString());
-            return defaultDate;
+            return cycleStartDateCache;
         }
 
-        function setCycleStartDate(dateObj) {
-            localStorage.setItem('renison_cycle_start_date', dateObj.toISOString());
+        async function setCycleStartDate(dateObj) {
+            cycleStartDateCache = dateObj;
+            await saveDataToBackend();
             updateDateLabel();
             renderDayTabs();
             renderMenus();
@@ -477,8 +485,8 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
             setTodayAsDefaultDay();
-            currentWeek = calculateCurrentWeek();
             await fetchMenuFromDatabase();
+            currentWeek = calculateCurrentWeek();
             switchWeek(currentWeek);
         });
 
@@ -557,249 +565,3 @@
                     <span class="text-xs sm:text-sm font-extrabold mt-0.5">${dateNum}</span>
                 `;
                 container.appendChild(btn);
-            });
-        }
-
-        function renderMenus() {
-            const menuContainer = document.getElementById('menu-container');
-            menuContainer.innerHTML = '';
-
-            const activeData = getActiveMenuData();
-            
-            if (!activeData[currentWeek]) activeData[currentWeek] = {};
-            if (!activeData[currentWeek][currentDayKey]) activeData[currentWeek][currentDayKey] = { lunch: [], dinner: [], soup: [] };
-
-            const dayMenu = activeData[currentWeek][currentDayKey];
-
-            const categories = [
-                { key: 'lunch', title: 'Lunch', icon: 'fa-sun', color: 'text-amber-500' },
-                { key: 'dinner', title: 'Dinner', icon: 'fa-moon', color: 'text-indigo-600' },
-                { key: 'soup', title: 'Soups & Extras', icon: 'fa-bowl-food', color: 'text-emerald-600' }
-            ];
-
-            categories.forEach(cat => {
-                const items = dayMenu[cat.key] || [];
-                
-                let itemsHtml = items.length > 0 
-                    ? items.map(item => `
-                        <div class="bg-slate-50/90 border border-slate-200/60 rounded-xl p-3 space-y-2">
-                            <p class="text-xs font-bold text-slate-800 leading-snug">${item.name}</p>
-                            ${item.tags && item.tags.length > 0 ? `
-                                <div class="flex flex-wrap gap-1">
-                                    ${item.tags.map(tag => `<span class="px-2 py-0.5 text-[9px] font-extrabold rounded-full ${getTagClass(tag)}">${tag}</span>`).join('')}
-                                </div>
-                            ` : ''}
-                        </div>
-                    `).join('')
-                    : `<p class="text-xs text-slate-400 italic py-4 text-center">No items listed for this meal slot.</p>`;
-
-                const card = document.createElement('div');
-                card.className = "bg-white/95 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4 flex flex-col justify-between";
-                card.innerHTML = `
-                    <div>
-                        <div class="flex items-center gap-2 pb-3 border-b border-slate-100">
-                            <i class="fa-solid ${cat.icon} ${cat.color} text-sm"></i>
-                            <h3 class="font-bold text-sm text-slate-800 uppercase tracking-wide">${cat.title}</h3>
-                        </div>
-                        <div class="space-y-2.5 mt-4">
-                            ${itemsHtml}
-                        </div>
-                    </div>
-                `;
-                menuContainer.appendChild(card);
-            });
-        }
-
-        function getTagClass(tag) {
-            switch(tag) {
-                case 'Halal': return 'bg-emerald-100 text-emerald-800';
-                case 'Vegetarian': return 'bg-green-100 text-green-800';
-                case 'Vegan': return 'bg-teal-100 text-teal-800';
-                case 'Gluten-Free': return 'bg-amber-100 text-amber-800';
-                default: return 'bg-slate-100 text-slate-700';
-            }
-        }
-
-        function toggleStaffModal() {
-            document.getElementById('staff-modal').classList.toggle('hidden');
-        }
-
-        function verifyPin() {
-            const pinInput = document.getElementById('staff-pin-input').value;
-            const errorMsg = document.getElementById('pin-error-msg');
-            
-            if (pinInput === "1959") {
-                isStaffAuthenticated = true;
-                errorMsg.classList.add('hidden');
-                document.getElementById('staff-auth-section').classList.add('hidden');
-                document.getElementById('staff-dashboard').classList.remove('hidden');
-                updateDateLabel();
-                populateDropItemList();
-            } else {
-                errorMsg.classList.remove('hidden');
-            }
-        }
-
-        function switchStaffTab(tabKey) {
-            ['add', 'clear', 'reset', 'support'].forEach(t => {
-                const content = document.getElementById(`staff-tab-${t}-content`);
-                const btn = document.getElementById(`tab-btn-${t}`);
-                if (content) content.classList.add('hidden');
-                if (btn) btn.className = "pb-2 px-2 text-slate-400 hover:text-slate-700 whitespace-nowrap";
-            });
-            document.getElementById(`staff-tab-${tabKey}-content`).classList.remove('hidden');
-            document.getElementById(`tab-btn-${tabKey}`).className = "pb-2 px-2 text-renison-navy border-b-2 border-renison-navy font-bold whitespace-nowrap";
-
-            if (tabKey === 'clear') {
-                populateDropItemList();
-            }
-        }
-
-        function toggleRecipeInput(show) {
-            const container = document.getElementById('recipe-details-container');
-            const recipeText = document.getElementById('recipe-text');
-            if (show) {
-                container.classList.remove('hidden');
-                recipeText.required = true;
-            } else {
-                container.classList.add('hidden');
-                recipeText.required = false;
-                recipeText.value = '';
-            }
-        }
-
-        function handleFeedbackSubmit(event) {
-            event.preventDefault();
-            alert("Thank you! Your feedback has been successfully submitted to Renison Food Services.");
-            event.target.reset();
-            toggleRecipeInput(false);
-        }
-
-        async function addCustomItem() {
-            const week = document.getElementById('input-week').value;
-            const day = document.getElementById('input-day').value;
-            const meal = document.getElementById('input-meal').value;
-            const title = document.getElementById('input-title').value.trim();
-
-            if (!title) {
-                alert('Please enter an item title.');
-                return;
-            }
-
-            const checkedTags = Array.from(document.querySelectorAll('.diet-check:checked')).map(cb => cb.value);
-
-            const activeData = getActiveMenuData();
-            
-            if (!activeData[week]) activeData[week] = {};
-            if (!activeData[week][day]) activeData[week][day] = {};
-            if (!activeData[week][day][meal]) activeData[week][day][meal] = [];
-
-            activeData[week][day][meal].push({ name: title, tags: checkedTags });
-
-            await saveMenuData(activeData);
-            document.getElementById('input-title').value = '';
-            document.querySelectorAll('.diet-check').forEach(cb => cb.checked = false);
-            
-            renderMenus();
-            populateDropItemList();
-            alert(`Added "${title}" to Week ${parseInt(week)+1} ${dayFullNames[day]} ${meal.toUpperCase()}.`);
-        }
-
-        function populateDropItemList() {
-            const week = document.getElementById('clear-week').value;
-            const day = document.getElementById('clear-day').value;
-            const meal = document.getElementById('clear-meal').value;
-            const selectEl = document.getElementById('drop-item-select');
-
-            const activeData = getActiveMenuData();
-            const items = activeData[week]?.[day]?.[meal] || [];
-
-            selectEl.innerHTML = '';
-
-            if (items.length === 0) {
-                selectEl.innerHTML = '<option value="">No items available in this slot</option>';
-                selectEl.disabled = true;
-                return;
-            }
-
-            selectEl.disabled = false;
-            items.forEach((item, index) => {
-                const option = document.createElement('option');
-                option.value = index;
-                option.textContent = item.name;
-                selectEl.appendChild(option);
-            });
-        }
-
-        async function dropSingleItem() {
-            const week = document.getElementById('clear-week').value;
-            const day = document.getElementById('clear-day').value;
-            const meal = document.getElementById('clear-meal').value;
-            const selectedIdx = document.getElementById('drop-item-select').value;
-
-            if (selectedIdx === "" || selectedIdx === null) {
-                alert("No item selected to drop.");
-                return;
-            }
-
-            const activeData = getActiveMenuData();
-            const items = activeData[week]?.[day]?.[meal] || [];
-
-            const droppedItemName = items[selectedIdx]?.name;
-            items.splice(selectedIdx, 1);
-            activeData[week][day][meal] = items;
-
-            await saveMenuData(activeData);
-            renderMenus();
-            populateDropItemList();
-            alert(`Dropped item "${droppedItemName}" successfully.`);
-        }
-
-        async function clearSelectedMeal() {
-            const week = document.getElementById('clear-week').value;
-            const day = document.getElementById('clear-day').value;
-            const meal = document.getElementById('clear-meal').value;
-
-            const activeData = getActiveMenuData();
-            if (activeData[week]?.[day]) {
-                activeData[week][day][meal] = [];
-            }
-            
-            await saveMenuData(activeData);
-            renderMenus();
-            populateDropItemList();
-            alert(`Cleared all ${meal.toUpperCase()} items for Week ${parseInt(week)+1} ${dayFullNames[day]}.`);
-        }
-
-        function advanceWeekCycle(days) {
-            const currentBase = getCycleStartDate();
-            currentBase.setDate(currentBase.getDate() + days);
-            setCycleStartDate(currentBase);
-            alert(`Cycle start date updated! "This Week" now starts on ${currentBase.toDateString()}`);
-        }
-
-        function setCurrentWeekToToday() {
-            const today = new Date();
-            const dayOfWeek = today.getDay();
-            const distanceToMonday = (dayOfWeek === 0 ? -6 : 1 - dayOfWeek);
-            
-            const recentMonday = new Date(today);
-            recentMonday.setDate(today.getDate() + distanceToMonday);
-            recentMonday.setHours(0, 0, 0, 0);
-
-            setCycleStartDate(recentMonday);
-            alert(`Cycle reset to active week starting Monday, ${recentMonday.toLocaleDateString()}`);
-        }
-
-        function resetToDefaultMenus() {
-            if (confirm("Are you sure you want to reset all menus back to default? Custom entries will be removed.")) {
-                saveMenuData(defaultMenuData).then(() => {
-                    renderMenus();
-                    populateDropItemList();
-                    alert("Menus restored to default globally!");
-                });
-            }
-        }
-    </script>
-</body>
-</html>
