@@ -16,7 +16,7 @@ export default async function handler(req, res) {
         const collection = db.collection('menus');
 
         if (req.method === 'GET') {
-            const doc = await collection.findOne({ _id: 'current_menu_v2' });
+            const doc = await collection.findOne({ _id: 'current_menu' });
             return res.status(200).json({
                 menuData: doc && doc.menuData ? doc.menuData : {},
                 cycleStartDate: doc && doc.cycleStartDate ? doc.cycleStartDate : null
