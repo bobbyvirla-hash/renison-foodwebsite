@@ -27,7 +27,7 @@ export default async function handler(req, res) {
             const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
             
             await collection.updateOne(
-                { _id: 'current_menu_v2' },
+                { _id: 'current_menu' }, // MATCHED to 'current_menu'
                 { 
                     $set: { 
                         menuData: body.menuData, 
