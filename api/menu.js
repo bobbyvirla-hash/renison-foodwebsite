@@ -18,13 +18,14 @@ export default async function handler(req, res) {
         if (req.method === 'GET') {
             const doc = await collection.findOne({ _id: 'current_menu_v2' });
             return res.status(200).json({
-                menuData: doc ? doc.menuData : null,
-                cycleStartDate: doc ? doc.cycleStartDate : null
+                menuData: doc && doc.menuData ? doc.menuData : {},
+                cycleStartDate: doc && doc.cycleStartDate ? doc.cycleStartDate : null
             });
         }
 
         if (req.method === 'POST') {
             const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+            
             await collection.updateOne(
                 { _id: 'current_menu_v2' },
                 { 
