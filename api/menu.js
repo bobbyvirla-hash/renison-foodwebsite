@@ -17,14 +17,22 @@ export default async function handler(req, res) {
 
         if (req.method === 'GET') {
             const doc = await collection.findOne({ _id: 'current_menu' });
-            return res.status(200).json(doc ? doc.menuData : {});
+            return res.status(200).json({
+                menuData: doc ? doc.menuData : {},
+                cycleStartDate: doc ? doc.cycleStartDate : null
+            });
         }
 
         if (req.method === 'POST') {
             const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
             await collection.updateOne(
                 { _id: 'current_menu' },
-                { $set: { menuData: body.menuData } },
+                { 
+                    $set: { 
+                        menuData: body.menuData, 
+                        cycleStartDate: body.cycleStartDate 
+                    } 
+                },
                 { upsert: true }
             );
             return res.status(200).json({ success: true });
