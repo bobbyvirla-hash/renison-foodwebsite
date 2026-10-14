@@ -6,7 +6,7 @@ async function connectToDatabase() {
     if (cachedDb) return cachedDb;
     const client = new MongoClient(process.env.MONGODB_URI);
     await client.connect();
-    cachedDb = client.db('renison_cafeteria'); // Database name
+    cachedDb = client.db('renison_cafeteria');
     return cachedDb;
 }
 
@@ -16,9 +16,9 @@ export default async function handler(req, res) {
         const collection = db.collection('menus');
 
         if (req.method === 'GET') {
-            const doc = await collection.findOne({ _id: 'current_menu' });
+            const doc = await collection.findOne({ _id: 'current_menu_v2' });
             return res.status(200).json({
-                menuData: doc ? doc.menuData : {},
+                menuData: doc ? doc.menuData : null,
                 cycleStartDate: doc ? doc.cycleStartDate : null
             });
         }
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
         if (req.method === 'POST') {
             const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
             await collection.updateOne(
-                { _id: 'current_menu' },
+                { _id: 'current_menu_v2' },
                 { 
                     $set: { 
                         menuData: body.menuData, 
